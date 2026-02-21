@@ -1,0 +1,174 @@
+{
+  "type": "scalar.function",
+  "input_schema": {
+    "type": "object",
+    "description": "A photograph of a cat within its surrounding environment, to be evaluated for overall visual harmony between the cat and its setting.",
+    "properties": {
+      "image": {
+        "type": "image",
+        "description": "A photograph of a cat within its surrounding environment. The image should capture the complete visual field — the cat, the space around it, the light falling across both, and the colors, textures, and shapes that populate the frame. The function considers the image as a whole, evaluating the relationship between the cat and its environment rather than any element in isolation."
+      }
+    },
+    "required": [
+      "image"
+    ]
+  },
+  "tasks": [
+    {
+      "type": "vector.completion",
+      "skip": null,
+      "messages": [
+        {
+          "role": "developer",
+          "content": [
+            {
+              "type": "text",
+              "text": "You are an expert in photographic atmosphere and visual mood. You evaluate whether the emotional tone of the lighting in a photograph agrees with the emotional tone of the setting. You answer directly and concisely."
+            }
+          ]
+        },
+        {
+          "role": "user",
+          "content": [
+            {
+              "$jmespath": "input.image"
+            },
+            {
+              "type": "text",
+              "text": "Look at the light in this photograph and the environment it falls across. Do they convey the same emotional feeling, or are they telling different stories?"
+            }
+          ]
+        }
+      ],
+      "responses": [
+        [
+          {
+            "type": "text",
+            "text": "They are in complete agreement. The emotional quality of the light and the mood of the setting speak with one voice — they produce a single, unified atmosphere. The warmth or coolness of the light matches the character of the space, and the photograph feels settled and coherent as a result."
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "text": "They are partially aligned. There are moments where the light and the setting seem to agree, but also a degree of inconsistency in the emotional tone they convey. The photograph doesn't feel entirely fractured, but it doesn't feel fully settled either."
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "text": "They are telling different stories. The mood the lighting suggests and the mood the environment suggests are at odds with one another. There is a clear disconnect — the light belongs to one emotional register and the setting to another, creating an internal tension that fractures the image."
+          }
+        ]
+      ],
+      "output": {
+        "$starlark": "output['scores'][0] * 1.0 + output['scores'][1] * 0.5 + output['scores'][2] * 0.0"
+      }
+    },
+    {
+      "type": "vector.completion",
+      "skip": null,
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "I'm curating a collection of cat photography where every image must feel chromatically unified. For the following photograph, tell me: does the color palette of the environment work with this cat's natural coloring, or against it?"
+            },
+            {
+              "$jmespath": "input.image"
+            }
+          ]
+        }
+      ],
+      "responses": [
+        [
+          {
+            "type": "text",
+            "text": "The environment's colors work beautifully with this cat. The surrounding palette accommodates the cat's natural coloring through graceful echoes, gentle contrasts, or complementary tones — they participate together in one coherent color scheme. The cat is held by its surroundings rather than competing with them."
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "text": "The color relationship is acceptable but unremarkable. The environment's palette doesn't clash harshly with the cat's coloring, but there's no particular chromatic sympathy either. The cat and its surroundings coexist without a strong sense of shared palette or deliberate complementary tension."
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "text": "The environment's colors work against this cat. The surrounding palette is either so disjointed or so overpowering that the cat's natural coloring is diminished within the frame. The cat looks like a chromatic orphan — lost in a color argument that has nothing to do with it."
+          }
+        ]
+      ],
+      "output": {
+        "$starlark": "output['scores'][0] * 1.0 + output['scores'][1] * 0.5 + output['scores'][2] * 0.0"
+      }
+    },
+    {
+      "type": "vector.completion",
+      "skip": null,
+      "messages": [
+        {
+          "role": "developer",
+          "content": [
+            {
+              "type": "text",
+              "text": "You assess whether subjects in photographs appear to genuinely inhabit their environments. You look at consistency of depth, scale, texture, and visual weight across the frame. Answer with your honest first impression."
+            }
+          ]
+        },
+        {
+          "role": "user",
+          "content": [
+            {
+              "$jmespath": "input.image"
+            }
+          ]
+        },
+        {
+          "role": "assistant",
+          "content": [
+            {
+              "type": "text",
+              "text": "Let me look at this photograph and assess whether the cat and the environment feel like they belong to the same world."
+            }
+          ]
+        },
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "Yes — does this cat look like it was discovered in this place, or placed into it?"
+            }
+          ]
+        }
+      ],
+      "responses": [
+        [
+          {
+            "type": "text",
+            "text": "Discovered. The cat inhabits this space completely. The depth, texture, scale, and visual weight are consistent across the entire frame — the cat and its environment share the same reality. The space feels like it was made to hold this cat, and the cat feels like it was made to fill this space. There is no seam, no sense of assembly."
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "text": "Somewhere in between. The cat is present in the space but doesn't fully inhabit it. There's a mild sense of separation — perhaps a subtle inconsistency in depth or texture — though nothing that immediately feels artificial. The photograph doesn't quite achieve the feeling of a single, unified moment."
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "text": "Placed. The cat and the environment feel like they belong to different photographs. There is a composite quality to the image — the cat appears to float in front of its background rather than exist within it. The scale, depth, or textures feel inconsistent, creating a sense of collage rather than a captured moment."
+          }
+        ]
+      ],
+      "output": {
+        "$starlark": "output['scores'][0] * 1.0 + output['scores'][1] * 0.5 + output['scores'][2] * 0.0"
+      }
+    }
+  ],
+  "description": "Scores how harmoniously a cat and its environment coexist in a photograph. Evaluates whether the light's mood matches the setting, the color palette accommodates the cat's coloring, and the cat looks like it belongs in the space — producing a unified visual world rather than a fragmented composite."
+}
